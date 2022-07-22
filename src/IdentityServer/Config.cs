@@ -1,21 +1,39 @@
 ﻿using Duende.IdentityServer.Models;
 
-namespace IdentityServer
+namespace IdentityServer;
+
+public static class Config
 {
-    public static class Config
-    {
-        public static IEnumerable<IdentityResource> IdentityResources =>
-            new IdentityResource[]
-            {
+    public static IEnumerable<IdentityResource> IdentityResources =>
+        new IdentityResource[]
+        {
             new IdentityResources.OpenId()
-            };
+        };
 
-        public static IEnumerable<ApiScope> ApiScopes =>
-            new ApiScope[]
-                { };
+    public static IEnumerable<ApiScope> ApiScopes =>
+        new List<ApiScope>
+        {
+            new ApiScope(name: "passmanapi", displayName: "Password Manager API")
+        };
 
-        public static IEnumerable<Client> Clients =>
-            new Client[]
-                { };
-    }
+    public static IEnumerable<Client> Clients =>
+        new List<Client>
+        {
+            new Client
+            {
+                ClientId = "consoletestclient",
+
+                // no interactive user, use the clientid/secret for authentication
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                // secret for authentication
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+
+                // scopes that client has access to
+                AllowedScopes = { "passmanapi" }
+            }
+        };
 }
