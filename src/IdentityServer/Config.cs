@@ -25,6 +25,7 @@ public static class Config
             new Client
             {
                 ClientId = "postmanClient",
+                ClientName = "Postman",
 
                 // no interactive user, use the clientid/secret for authentication
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
@@ -42,6 +43,7 @@ public static class Config
             new Client
             {
                 ClientId = "blazorWebClient",
+                ClientName = "Password Manager",
                 ClientSecrets = { new Secret("secret".Sha256()) },
 
                 AllowedGrantTypes = GrantTypes.Code,
