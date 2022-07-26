@@ -15,6 +15,13 @@ public class GetAllCredentials : EndpointBaseAsync.WithRequest<string>.WithActio
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+    /// <summary>
+    /// Get All Credentials for a specific Subject ID
+    /// </summary>
+    /// <param name="subjectId">The User's ID in Identity Server</param>
+    /// <param name="cancellationToken"></param>
+    /// <response code="200">Credentials Retrieved</response>
+    /// <returns>A list of credentials</returns>
     [HttpGet("api/[namespace]")]
     public override async Task<ActionResult<GetAllCredentialsResponse>> HandleAsync(string subjectId, CancellationToken cancellationToken = default)
     {

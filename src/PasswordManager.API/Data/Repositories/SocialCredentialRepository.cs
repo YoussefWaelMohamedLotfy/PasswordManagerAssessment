@@ -14,7 +14,7 @@ public class SocialCredentialRepository : ISocialCredentialRepository
         => await _context.SocialCredentials.AsNoTracking().Where(x => x.SubjectID == subjectID).ToListAsync(cancellationToken);
 
     public async Task<SocialCredential> GetByIdAsync(int id, CancellationToken cancellationToken = default)
-        => (await _context.SocialCredentials.FindAsync(id, cancellationToken))!;
+        => (await _context.SocialCredentials.FindAsync(new object[] { id }, cancellationToken))!;
 
     public async Task<SocialCredential> AddAsync(SocialCredential entity, CancellationToken cancellationToken = default)
     {
