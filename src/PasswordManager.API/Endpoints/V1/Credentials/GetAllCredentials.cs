@@ -4,7 +4,7 @@ using PasswordManager.Contracts.DTOs;
 
 namespace PasswordManager.API.Endpoints.V1.Credentials;
 
-public class GetAllCredentials : EndpointBaseAsync.WithoutRequest.WithActionResult<GetAllCredentialsResponse>
+public class GetAllCredentials : EndpointBaseAsync.WithRequest<string>.WithActionResult<GetAllCredentialsResponse>
 {
     private readonly ISocialCredentialRepository _repo;
     private readonly IMapper _mapper;
@@ -16,9 +16,9 @@ public class GetAllCredentials : EndpointBaseAsync.WithoutRequest.WithActionResu
     }
 
     [HttpGet("api/[namespace]")]
-    public override async Task<ActionResult<GetAllCredentialsResponse>> HandleAsync(CancellationToken cancellationToken = default)
+    public override async Task<ActionResult<GetAllCredentialsResponse>> HandleAsync(string subjectId, CancellationToken cancellationToken = default)
     {
-        var credentialsinDb = await _repo.GetAllAsync(cancellationToken);
+        var credentialsinDb = await _repo.GetAllAsync(subjectId, cancellationToken);
 
         var result = _mapper.Map<IReadOnlyList<GetAllCredentialsResponse>>(credentialsinDb);
         return Ok(result);

@@ -10,8 +10,8 @@ public class SocialCredentialRepository : ISocialCredentialRepository
     public SocialCredentialRepository(AppDbContext context)
         => _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<IReadOnlyList<SocialCredential>> GetAllAsync(CancellationToken cancellationToken = default)
-        => await _context.SocialCredentials.AsNoTracking().ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<SocialCredential>> GetAllAsync(string subjectID, CancellationToken cancellationToken = default)
+        => await _context.SocialCredentials.AsNoTracking().Where(x => x.SubjectID == subjectID).ToListAsync(cancellationToken);
 
     public async Task<SocialCredential> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         => (await _context.SocialCredentials.FindAsync(id, cancellationToken))!;
