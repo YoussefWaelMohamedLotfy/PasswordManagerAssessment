@@ -30,6 +30,8 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 builder.Services.AddControllers(options =>
 {
     // Enables the use of "[namespace]" in Endpoint routes
