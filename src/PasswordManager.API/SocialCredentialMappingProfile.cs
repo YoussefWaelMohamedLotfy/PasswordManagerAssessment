@@ -10,5 +10,8 @@ public class SocialCredentialMappingProfile : Profile
     {
         CreateMap<SocialCredential, GetAllCredentialsResponse>();
         CreateMap<SocialCredential, GetSingleCredentialResponse>();
+
+        CreateMap<CreateCredentialRequest, SocialCredential>();
+        CreateMap<SocialCredential, CreateCredentialResponse>();
     }
 }
