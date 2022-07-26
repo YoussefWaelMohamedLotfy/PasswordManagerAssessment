@@ -26,7 +26,11 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Enables the use of "[namespace]" in Endpoint routes
+    options.UseNamespaceRouteToken();
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -53,6 +57,8 @@ builder.Services.AddSwaggerGen(c =>
     string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+
+    c.UseApiEndpoints();
 });
 
 var app = builder.Build();
