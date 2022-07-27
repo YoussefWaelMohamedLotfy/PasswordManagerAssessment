@@ -13,5 +13,9 @@ public class SocialCredentialMappingProfile : Profile
 
         CreateMap<CreateCredentialRequest, SocialCredential>();
         CreateMap<SocialCredential, CreateCredentialResponse>();
+
+        CreateMap<UpdateCredentialRequest, SocialCredential>()
+            .ForMember(d => d.Name, o => o.Ignore());
+        CreateMap<SocialCredential, UpdateCredentialResponse>();
     }
 }
