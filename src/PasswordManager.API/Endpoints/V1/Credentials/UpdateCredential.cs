@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PasswordManager.API.Data.Repositories;
 using PasswordManager.API.Models;
+using PasswordManager.API.Services;
 using PasswordManager.Contracts.DTOs;
 
 namespace PasswordManager.API.Endpoints.V1.Credentials;
@@ -9,11 +10,13 @@ public class UpdateCredential : EndpointBaseAsync.WithRequest<UpdateRequest>.Wit
 {
     private readonly ISocialCredentialRepository _repo;
     private readonly IMapper _mapper;
+    private readonly IEncryptionService _encryptor;
 
-    public UpdateCredential(ISocialCredentialRepository repo, IMapper mapper)
+    public UpdateCredential(ISocialCredentialRepository repo, IMapper mapper, IEncryptionService encryptor)
     {
         _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
     }
 
     /// <summary>
@@ -35,6 +38,7 @@ public class UpdateCredential : EndpointBaseAsync.WithRequest<UpdateRequest>.Wit
             return NotFound();
 
         _mapper.Map(request.RequestBody, credentialInDb);
+        credentialInDb.AccountPassword = _encryptor.EncryptString(request.RequestBody.AccountPassword);
         
         if (Enum.TryParse(request.RequestBody.Name, out CredentialAppName parsedValue))
             credentialInDb.Name = parsedValue;

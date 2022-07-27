@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using PasswordManager.API.Data;
 using PasswordManager.API.Data.Repositories;
 using PasswordManager.API.Filters;
+using PasswordManager.API.Services;
 using PasswordManager.Contracts;
 using System.Reflection;
 
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the DI container.
 builder.Services.AddDbContext<AppDbContext>()
     .AddScoped<ISocialCredentialRepository, SocialCredentialRepository>();
+
+builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

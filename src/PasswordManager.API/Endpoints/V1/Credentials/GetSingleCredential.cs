@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PasswordManager.API.Data.Repositories;
+using PasswordManager.API.Services;
 using PasswordManager.Contracts.DTOs;
 
 namespace PasswordManager.API.Endpoints.V1.Credentials;
@@ -8,11 +9,13 @@ public class GetSingleCredential : EndpointBaseAsync.WithRequest<int>.WithAction
 {
     private readonly ISocialCredentialRepository _repo;
     private readonly IMapper _mapper;
+    private readonly IEncryptionService _encryptor;
 
-    public GetSingleCredential(ISocialCredentialRepository repo, IMapper mapper)
+    public GetSingleCredential(ISocialCredentialRepository repo, IMapper mapper, IEncryptionService encryptor)
     {
         _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _encryptor = encryptor ?? throw new ArgumentNullException(nameof(encryptor));
     }
 
     /// <summary>
@@ -30,6 +33,8 @@ public class GetSingleCredential : EndpointBaseAsync.WithRequest<int>.WithAction
 
         if (credentialInDb is null)
             return NotFound();
+
+        credentialInDb.AccountPassword = _encryptor.DecryptString(credentialInDb.AccountPassword);
 
         var result = _mapper.Map<GetSingleCredentialResponse>(credentialInDb);
         return Ok(result);
