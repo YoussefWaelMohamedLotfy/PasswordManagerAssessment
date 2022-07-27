@@ -23,15 +23,15 @@ public class SocialCredentialRepository : ISocialCredentialRepository
         return entity;
     }
 
-    public async Task UpdateAsync(SocialCredential entity)
+    public async Task UpdateAsync(SocialCredential entity, CancellationToken cancellationToken = default)
     {
         _context.Entry(entity).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(SocialCredential entity)
+    public async Task DeleteAsync(SocialCredential entity, CancellationToken cancellationToken = default)
     {
         _context.SocialCredentials.Remove(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
