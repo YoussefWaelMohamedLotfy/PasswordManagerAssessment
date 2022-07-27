@@ -1,10 +1,20 @@
+using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PasswordManager.API.Data;
+using PasswordManager.API.Data.Repositories;
+using PasswordManager.API.Filters;
+using PasswordManager.API.Services;
+using PasswordManager.Contracts;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the DI container.
+builder.Services.AddDbContext<AppDbContext>()
+    .AddScoped<ISocialCredentialRepository, SocialCredentialRepository>();
+
+builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -26,10 +36,18 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 builder.Services.AddControllers(options =>
 {
     // Enables the use of "[namespace]" in Endpoint routes
     options.UseNamespaceRouteToken();
+    options.Filters.Add<FluentValidationFilter>();
+})
+.AddFluentValidation(config =>
+{
+    config.DisableDataAnnotationsValidation = true;
+    config.RegisterValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -75,6 +93,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers().RequireAuthorization("ApiScope");
+app.MapControllers()
+    .RequireAuthorization("ApiScope");
 
 app.Run();
