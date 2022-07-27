@@ -1,7 +1,10 @@
+using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PasswordManager.API.Data;
 using PasswordManager.API.Data.Repositories;
+using PasswordManager.API.Filters;
+using PasswordManager.Contracts;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +39,9 @@ builder.Services.AddControllers(options =>
 {
     // Enables the use of "[namespace]" in Endpoint routes
     options.UseNamespaceRouteToken();
-});
+    options.Filters.Add<FluentValidationFilter>();
+})
+.AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<IAssemblyScanPoint>());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
