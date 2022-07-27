@@ -12,7 +12,7 @@ public class DeleteCredential : EndpointBaseAsync.WithRequest<int>.WithActionRes
     }
 
     /// <summary>
-    /// Gets a single Credential with ID
+    /// Deletes a Credential with ID from Database
     /// </summary>
     /// <param name="id">The credential's ID</param>
     /// <param name="cancellationToken"></param>

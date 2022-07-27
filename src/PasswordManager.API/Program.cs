@@ -41,7 +41,11 @@ builder.Services.AddControllers(options =>
     options.UseNamespaceRouteToken();
     options.Filters.Add<FluentValidationFilter>();
 })
-.AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<IAssemblyScanPoint>());
+.AddFluentValidation(config =>
+{
+    config.DisableDataAnnotationsValidation = true;
+    config.RegisterValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
