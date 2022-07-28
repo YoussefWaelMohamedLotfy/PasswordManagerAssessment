@@ -1,0 +1,23 @@
+version: '3.8'
+name: PasswordManager-Compose
+
+services:
+  passwordmanager.api:
+    image: ${DOCKER_REGISTRY-}passwordmanagerapi
+    build:
+      context: .
+      dockerfile: src/PasswordManager.API/Dockerfile
+
+  identityserver:
+    image: ${DOCKER_REGISTRY-}identityserver
+    build:
+      context: .
+      dockerfile: src/IdentityServer/Dockerfile
+
+
+  passwordmanager.ui:
+    image: ${DOCKER_REGISTRY-}passwordmanagerui
+    build:
+      context: .
+      dockerfile: src/PasswordManager.UI/Dockerfile
+
