@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
 using PasswordManager.Logging;
+using PasswordManager.SDK;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -15,7 +17,13 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = "Cookies";
     options.DefaultChallengeScheme = "oidc";
 })
-    .AddCookie("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.Events.OnSigningOut = async e =>
+        {
+            await e.HttpContext.RevokeUserRefreshTokenAsync();
+        };
+    })
     .AddOpenIdConnect("oidc", options =>
     {
         options.Authority = builder.Configuration.GetValue<string>("ExternalLinks:IdentityServer");
@@ -35,6 +43,8 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddRefitHttpClients();
 
 var app = builder.Build();
 
