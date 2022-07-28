@@ -6,9 +6,13 @@ using PasswordManager.API.Data.Repositories;
 using PasswordManager.API.Filters;
 using PasswordManager.API.Services;
 using PasswordManager.Contracts;
+using PasswordManager.Logging;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(Serilogger.Configure);
 
 // Add services to the DI container.
 builder.Services.AddDbContext<AppDbContext>()
