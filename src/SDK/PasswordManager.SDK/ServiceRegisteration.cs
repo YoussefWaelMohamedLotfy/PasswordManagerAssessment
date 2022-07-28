@@ -14,6 +14,7 @@ public static class ServiceRegisteration
     {
         services.AddHttpContextAccessor();
         services.AddTransient<AuthenticationDelegatingHandler>();
+        services.AddTransient<LoggingDelegatingHandler>();
 
         services.AddRefitClient<IPasswordManagerApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7001"))

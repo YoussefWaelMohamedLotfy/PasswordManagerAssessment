@@ -19,7 +19,7 @@ public interface IPasswordManagerApi
     /// <param name="subjectId">The user's ID in IdentityServer</param>
     /// <returns>HTTP Response from API, including the Data, if found</returns>
     [Get("/api/Credentials")]
-    Task<ApiResponse<GetAllCredentialsResponse>> GetAllCredentials([Query] string subjectId);
+    Task<ApiResponse<List<GetAllCredentialsResponse>>> GetAllCredentials([Query] string subjectId);
 
     /// <summary>
     /// Creates a new credential to be saved in API
