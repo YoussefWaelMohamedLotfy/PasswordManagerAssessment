@@ -13,11 +13,16 @@ public static class ServiceRegisteration
     public static void AddRefitHttpClients(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
+
+        services.AddAccessTokenManagement();
+
         services.AddTransient<AuthenticationDelegatingHandler>();
         services.AddTransient<LoggingDelegatingHandler>();
 
         services.AddRefitClient<IPasswordManagerApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7001"))
+            // Can be used instead of AuthenticationDelegatingHandler
+            //.AddUserAccessTokenHandler()
             .AddHttpMessageHandler<AuthenticationDelegatingHandler>()
             .AddHttpMessageHandler<LoggingDelegatingHandler>()
             .AddPolicyHandler(GetRetryPolicy())
