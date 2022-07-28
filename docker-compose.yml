@@ -6,3 +6,10 @@ services:
     build:
       context: .
       dockerfile: src/PasswordManager.API/Dockerfile
+
+  identityserver:
+    image: ${DOCKER_REGISTRY-}identityserver
+    build:
+      context: .
+      dockerfile: src/IdentityServer/Dockerfile
+
