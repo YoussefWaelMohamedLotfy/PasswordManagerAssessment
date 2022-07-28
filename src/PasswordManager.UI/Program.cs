@@ -1,6 +1,10 @@
+using PasswordManager.Logging;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(Serilogger.Configure);
 
 // Add services to the container.
 
