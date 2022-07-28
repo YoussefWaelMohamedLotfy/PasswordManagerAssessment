@@ -1,4 +1,5 @@
 using PasswordManager.Logging;
+using PasswordManager.SDK;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -35,6 +36,8 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddRefitHttpClients();
 
 var app = builder.Build();
 
