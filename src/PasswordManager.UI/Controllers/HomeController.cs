@@ -22,22 +22,18 @@ public class HomeController : Controller
     public IActionResult Claims() 
         => View();
 
-    [Authorize]
-    public IActionResult BackendTest()
-        => View();
-
     public async Task<IActionResult> GetSingle()
     {
         var response = await _api.GetSingleCredential(20);
 
-        return View(nameof(BackendTest));
+        return View();
     }
 
     public async Task<IActionResult> GetAll()
     {
         var response = await _api.GetAllCredentials("1");
 
-        return View(nameof(BackendTest));
+        return View();
     }
 
     public async Task<IActionResult> Create()
@@ -51,7 +47,7 @@ public class HomeController : Controller
             IsActive = true
         });
 
-        return View(nameof(BackendTest));
+        return View();
     }
 
     public async Task<IActionResult> Update()
@@ -64,14 +60,14 @@ public class HomeController : Controller
             IsActive = false
         });
 
-        return View(nameof(BackendTest));
+        return View();
     }
 
     public async Task<IActionResult> Delete()
     {
         var response = await _api.DeleteCredential(19);
 
-        return View(nameof(BackendTest));
+        return View();
     }
 
     public IActionResult Logout()
