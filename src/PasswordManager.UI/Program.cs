@@ -1,4 +1,7 @@
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using PasswordManager.Logging;
 using PasswordManager.SDK;
 using Serilog;
@@ -9,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog(Serilogger.Configure);
 
 // Add services to the container.
-
+IdentityModelEventSource.ShowPII = true;
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
 builder.Services.AddAuthentication(options =>
@@ -40,6 +43,13 @@ builder.Services.AddAuthentication(options =>
 
         options.GetClaimsFromUserInfoEndpoint = true;
         options.SaveTokens = true;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = JwtClaimTypes.GivenName,
+            RoleClaimType = JwtClaimTypes.Role,
+            ValidIssuer = "https://localhost"
+        };
     });
 
 builder.Services.AddControllersWithViews();
