@@ -26,3 +26,12 @@ The following steps shows how to run the project:
 + Make sure that the project `PasswordManager.UI`, `PasswordManager.API` and `IdentityServer` are set as Startup Projects.
 + Build the Solution using `Ctrl + Shift + B`, or Right-click on the solution file, then select `Build Solution`
 + Run the project using `Ctrl + F5`, or click on run located under the menu bar.
+
+## Accounts for logging in
+
+There are 2 accounts stored in-memory that are available for use.
+
+|Subject ID|Username|Password|
+|----------|:------:|:------:|
+|1|alice|alice|
+|2|bob|bob|
