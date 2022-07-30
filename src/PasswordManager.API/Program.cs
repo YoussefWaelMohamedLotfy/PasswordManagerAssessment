@@ -1,3 +1,4 @@
+using Elastic.Apm.NetCoreAll;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -86,6 +87,8 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseAllElasticApm(builder.Configuration);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

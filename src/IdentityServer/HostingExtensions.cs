@@ -1,3 +1,4 @@
+using Elastic.Apm.NetCoreAll;
 using Serilog;
 
 namespace IdentityServer;
@@ -27,6 +28,8 @@ internal static class HostingExtensions
 
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        app.UseAllElasticApm(app.Configuration);
+
         app.UseSerilogRequestLogging();
 
         if (app.Environment.IsDevelopment())

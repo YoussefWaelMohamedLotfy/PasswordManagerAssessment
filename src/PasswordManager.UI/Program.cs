@@ -1,3 +1,4 @@
+using Elastic.Apm.NetCoreAll;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Logging;
@@ -5,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using PasswordManager.Logging;
 using PasswordManager.SDK;
 using Serilog;
+using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +61,8 @@ builder.Services.AddRefitHttpClients();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseAllElasticApm(builder.Configuration);
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
