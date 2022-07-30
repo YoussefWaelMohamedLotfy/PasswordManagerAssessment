@@ -3,11 +3,13 @@ using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using PasswordManager.Logging;
 using PasswordManager.SDK;
 using Serilog;
-using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +55,23 @@ builder.Services.AddAuthentication(options =>
             ValidIssuer = "https://localhost"
         };
     });
+
+var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
+builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+{
+    tracerProviderBuilder
+        .AddJaegerExporter(o =>
+        {
+            o.AgentHost = "localhost";
+            o.AgentPort = 6831;
+            o.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
+        })
+        .AddSource(serviceName)
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation();
+});
 
 builder.Services.AddControllersWithViews();
 

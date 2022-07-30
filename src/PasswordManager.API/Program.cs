@@ -2,6 +2,8 @@ using Elastic.Apm.NetCoreAll;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using PasswordManager.API.Data;
 using PasswordManager.API.Data.Repositories;
 using PasswordManager.API.Filters;
@@ -42,6 +44,25 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
+builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+{
+    tracerProviderBuilder
+        .AddJaegerExporter(o =>
+        {
+            o.AgentHost = "localhost";
+            o.AgentPort = 6831;
+            o.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
+        })
+        .AddSource(serviceName)
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation()
+        .AddSqlClientInstrumentation();
+});
 
 builder.Services.AddControllers(options =>
 {

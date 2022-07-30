@@ -1,5 +1,8 @@
 using Elastic.Apm.NetCoreAll;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
+using System.Reflection;
 
 namespace IdentityServer;
 
@@ -22,6 +25,23 @@ internal static class HostingExtensions
         .AddInMemoryClients(Config.Clients)
         .AddTestUsers(TestUsers.Users)
         .AddDeveloperSigningCredential();
+
+        var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
+        builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+        {
+            tracerProviderBuilder
+                .AddJaegerExporter(o =>
+                {
+                    o.AgentHost = "localhost";
+                    o.AgentPort = 6831;
+                    o.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
+                })
+                .AddSource(serviceName)
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
+                .AddHttpClientInstrumentation()
+                .AddAspNetCoreInstrumentation();
+        });
 
         return builder.Build();
     }

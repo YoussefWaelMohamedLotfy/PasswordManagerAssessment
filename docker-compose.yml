@@ -30,5 +30,8 @@ services:
   apmserver:
     image: docker.elastic.co/apm/apm-server:7.17.5
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+
 volumes:
   elasticsearch-data:
