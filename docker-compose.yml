@@ -2,24 +2,24 @@ version: '3.8'
 name: PasswordManager-Compose
 
 services:
-  passwordmanager.api:
-    image: ${DOCKER_REGISTRY-}passwordmanagerapi
-    build:
-      context: .
-      dockerfile: src/PasswordManager.API/Dockerfile
+  #passwordmanager.api:
+  #  image: ${DOCKER_REGISTRY-}passwordmanagerapi
+  #  build:
+  #    context: .
+  #    dockerfile: src/PasswordManager.API/Dockerfile
 
-  identityserver:
-    image: ${DOCKER_REGISTRY-}identityserver
-    build:
-      context: .
-      dockerfile: src/IdentityServer/Dockerfile
+  #identityserver:
+  #  image: ${DOCKER_REGISTRY-}identityserver
+  #  build:
+  #    context: .
+  #    dockerfile: src/IdentityServer/Dockerfile
 
 
-  passwordmanager.ui:
-    image: ${DOCKER_REGISTRY-}passwordmanagerui
-    build:
-      context: .
-      dockerfile: src/PasswordManager.UI/Dockerfile
+  #passwordmanager.ui:
+  #  image: ${DOCKER_REGISTRY-}passwordmanagerui
+  #  build:
+  #    context: .
+  #    dockerfile: src/PasswordManager.UI/Dockerfile
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
@@ -29,6 +29,9 @@ services:
 
   apmserver:
     image: docker.elastic.co/apm/apm-server:7.17.5
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
 
 volumes:
   elasticsearch-data:

@@ -1,11 +1,15 @@
+using Elastic.Apm.NetCoreAll;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using PasswordManager.Logging;
 using PasswordManager.SDK;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +56,23 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
+builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+{
+    tracerProviderBuilder
+        .AddJaegerExporter(o =>
+        {
+            o.AgentHost = "localhost";
+            o.AgentPort = 6831;
+            o.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
+        })
+        .AddSource(serviceName)
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation();
+});
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRefitHttpClients();
@@ -59,6 +80,8 @@ builder.Services.AddRefitHttpClients();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseAllElasticApm(builder.Configuration);
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
