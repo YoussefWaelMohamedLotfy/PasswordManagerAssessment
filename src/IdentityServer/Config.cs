@@ -55,6 +55,7 @@ public static class Config
                 PostLogoutRedirectUris = { "https://localhost:6001/signout-callback-oidc" },
 
                 AllowOfflineAccess = true,
+                RequireConsent = true,
 
                 AllowedScopes = new List<string>
                 {
