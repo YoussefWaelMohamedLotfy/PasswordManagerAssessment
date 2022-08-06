@@ -14,6 +14,10 @@ internal static class HostingExtensions
 
         builder.Services.AddIdentityServer(options =>
         {
+            options.ServerSideSessions.ExpiredSessionsTriggerBackchannelLogout = true;
+
+            options.Authentication.CoordinateClientLifetimesWithUserSession = true;
+
             options.EmitStaticAudienceClaim = true;
 
             options.Events.RaiseSuccessEvents = true;
@@ -24,6 +28,7 @@ internal static class HostingExtensions
         .AddInMemoryApiScopes(Config.ApiScopes)
         .AddInMemoryClients(Config.Clients)
         .AddTestUsers(TestUsers.Users)
+        .AddServerSideSessions()
         .AddDeveloperSigningCredential();
 
         var serviceName = Assembly.GetCallingAssembly().GetName().Name;

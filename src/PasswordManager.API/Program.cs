@@ -1,4 +1,5 @@
 using Elastic.Apm.NetCoreAll;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -69,12 +70,11 @@ builder.Services.AddControllers(options =>
     // Enables the use of "[namespace]" in Endpoint routes
     options.UseNamespaceRouteToken();
     options.Filters.Add<FluentValidationFilter>();
-})
-.AddFluentValidation(config =>
-{
-    config.DisableDataAnnotationsValidation = true;
-    config.RegisterValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
 });
+
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
