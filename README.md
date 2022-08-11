@@ -27,11 +27,38 @@ The following steps shows how to run the project:
 + Build the Solution using `Ctrl + Shift + B`, or Right-click on the solution file, then select `Build Solution`
 + Run the project using `Ctrl + F5`, or click on run located under the menu bar.
 
+## IdentityServer Database Migrations
+
+There are 3 DbContexts in `IdentityServer` project. In case you want to create a new migration for any of them, use the following commands:
+
++ ConfigurationDbContext
+
+```powershell
+Add-Migration <Migration Name> -Context ConfigurationDbContext -OutputDir "Migrations\ConfigurationDb"
+Update-Database -Context ConfigurationDbContext
+```
+
++ PersistedGrantDbContext
+
+```powershell
+Add-Migration <Migration Name> -Context PersistedGrantDbContext -OutputDir "Migrations\PersistedGrantDb"
+Update-Database -Context PersistedGrantDbContext
+```
+
++ AppDbContext
+
+```powershell
+Add-Migration <Migration Name> -Context AppDbContext -OutputDir "Migrations\AppDb"
+Update-Database -Context AppDbContext
+```
+
+> Replace `<Migration Name>` with any name you prefer.
+
 ## Accounts for logging in
 
 There are 2 accounts stored in-memory that are available for use.
 
 |Subject ID|Username|Password|
 |----------|:------:|:------:|
-|1|alice|alice|
-|2|bob|bob|
+|1|alice|Pass123$|
+|2|bob|Pass123$|
