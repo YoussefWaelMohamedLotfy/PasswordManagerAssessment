@@ -1,4 +1,7 @@
 using Elastic.Apm.NetCoreAll;
+using IdentityServer.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
@@ -12,21 +15,36 @@ internal static class HostingExtensions
     {
         builder.Services.AddRazorPages();
 
+        var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
+        builder.Services.AddDbContext<AppDbContext>(opt =>
+        {
+            opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.MigrationsAssembly(serviceName));
+        });
+
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>();
+
         builder.Services.AddIdentityServer(options =>
         {
+            options.ServerSideSessions.ExpiredSessionsTriggerBackchannelLogout = true;
+
+            options.Authentication.CoordinateClientLifetimesWithUserSession = true;
+
             options.EmitStaticAudienceClaim = true;
 
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseErrorEvents = true;
         })
-        .AddInMemoryIdentityResources(Config.IdentityResources)
-        .AddInMemoryApiScopes(Config.ApiScopes)
-        .AddInMemoryClients(Config.Clients)
-        .AddTestUsers(TestUsers.Users)
+        .AddConfigurationStore(options => options.ConfigureDbContext = b
+            => b.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt.MigrationsAssembly(serviceName)))
+        .AddOperationalStore(options => options.ConfigureDbContext = b
+            => b.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt.MigrationsAssembly(serviceName)))
+        .AddAspNetIdentity<IdentityUser>()
+        .AddServerSideSessions()
         .AddDeveloperSigningCredential();
 
-        var serviceName = Assembly.GetCallingAssembly().GetName().Name;
 
         builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
         {
