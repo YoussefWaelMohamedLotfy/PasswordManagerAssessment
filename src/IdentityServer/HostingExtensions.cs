@@ -1,4 +1,5 @@
 using Elastic.Apm.NetCoreAll;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
@@ -12,6 +13,8 @@ internal static class HostingExtensions
     {
         builder.Services.AddRazorPages();
 
+        var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
         builder.Services.AddIdentityServer(options =>
         {
             options.ServerSideSessions.ExpiredSessionsTriggerBackchannelLogout = true;
@@ -24,14 +27,14 @@ internal static class HostingExtensions
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseErrorEvents = true;
         })
-        .AddInMemoryIdentityResources(Config.IdentityResources)
-        .AddInMemoryApiScopes(Config.ApiScopes)
-        .AddInMemoryClients(Config.Clients)
+        .AddConfigurationStore(options => options.ConfigureDbContext = b
+            => b.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt.MigrationsAssembly(serviceName)))
+        .AddOperationalStore(options => options.ConfigureDbContext = b
+            => b.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt.MigrationsAssembly(serviceName)))
         .AddTestUsers(TestUsers.Users)
         .AddServerSideSessions()
         .AddDeveloperSigningCredential();
 
-        var serviceName = Assembly.GetCallingAssembly().GetName().Name;
 
         builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
         {
