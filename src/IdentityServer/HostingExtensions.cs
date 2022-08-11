@@ -1,4 +1,6 @@
 using Elastic.Apm.NetCoreAll;
+using IdentityServer.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -14,6 +16,14 @@ internal static class HostingExtensions
         builder.Services.AddRazorPages();
 
         var serviceName = Assembly.GetCallingAssembly().GetName().Name;
+
+        builder.Services.AddDbContext<AppDbContext>(opt =>
+        {
+            opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.MigrationsAssembly(serviceName));
+        });
+
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>();
 
         builder.Services.AddIdentityServer(options =>
         {
@@ -31,7 +41,7 @@ internal static class HostingExtensions
             => b.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt.MigrationsAssembly(serviceName)))
         .AddOperationalStore(options => options.ConfigureDbContext = b
             => b.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"), opt => opt.MigrationsAssembly(serviceName)))
-        .AddTestUsers(TestUsers.Users)
+        .AddAspNetIdentity<IdentityUser>()
         .AddServerSideSessions()
         .AddDeveloperSigningCredential();
 

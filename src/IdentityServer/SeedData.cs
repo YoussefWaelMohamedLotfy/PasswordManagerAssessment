@@ -142,12 +142,13 @@ public class SeedData
 
             result = userMgr.AddClaimsAsync(bob, new Claim[]
             {
-        new Claim(JwtClaimTypes.Name, "Bob Smith"),
-        new Claim(JwtClaimTypes.GivenName, "Bob"),
-        new Claim(JwtClaimTypes.FamilyName, "Smith"),
-        new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-        new Claim("location", "somewhere")
+                new Claim(JwtClaimTypes.Name, "Bob Smith"),
+                new Claim(JwtClaimTypes.GivenName, "Bob"),
+                new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
+                new Claim("location", "somewhere")
             }).Result;
+
             if (!result.Succeeded)
             {
                 throw new Exception(result.Errors.First().Description);
