@@ -1,3 +1,4 @@
+using Consul;
 using Elastic.Apm.NetCoreAll;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -75,6 +76,10 @@ builder.Services.AddControllers(options =>
 builder.Services.AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
+
+builder.Services.AddSingleton<IConsulClient, ConsulClient>(_ => 
+    new ConsulClient(c => c.Address = new Uri("http://localhost:8500")));
+builder.Services.AddHostedService<ConsulDiscoveryService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
