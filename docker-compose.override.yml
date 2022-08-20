@@ -50,6 +50,7 @@ services:
     container_name: Kibana-v7
     environment:        
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ENTERPRISESEARCH_HOST=http://elastic-enterprise-search:3002
     depends_on:
       - elasticsearch
     ports:
@@ -72,6 +73,22 @@ services:
         -E apm-server.kibana.host=kibana:5601
         -E output.elasticsearch.hosts=["elasticsearch:9200"]
 
+  elastic-enterprise-search:
+    container_name: Elasticsearch-Enterprise-Search
+    depends_on:
+      - elasticsearch
+      - kibana
+    environment:
+      - "JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ENT_SEARCH_DEFAULT_PASSWORD=changeme"
+      #- "elasticsearch.username=elastic"
+      #- "elasticsearch.password=changeme"
+      - "elasticsearch.host=http://elasticsearch:9200"
+      - "allow_es_settings_modification=true"
+      - "secret_management.encryption_keys=[4a2cd3f81d39bf28738c10db0ca782095ffac07279561809eecc722e0c20eb09]"
+      - "elasticsearch.startup_retry.interval=15"
+    ports:
+      - 3002:3002
 
   jaeger:
     container_name: Jaeger
@@ -95,6 +112,6 @@ services:
     ports:
       - 8500:8500
       - 8600:8600/udp
-    command: > # "agent -dev -server -ui -node=server-1 -bootstrap-expect=1 -client="0.0.0.0""
+    command: >
       agent -dev -server -ui -node=server-1 -bootstrap-expect=1
         -client="0.0.0.0"
