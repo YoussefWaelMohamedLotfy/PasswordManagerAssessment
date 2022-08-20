@@ -5,6 +5,7 @@ using Polly;
 using Refit;
 using Serilog;
 using PasswordManager.SDK.Handlers;
+using Consul;
 
 namespace PasswordManager.SDK;
 
@@ -19,8 +20,16 @@ public static class ServiceRegisteration
         services.AddTransient<AuthenticationDelegatingHandler>();
         services.AddTransient<LoggingDelegatingHandler>();
 
+        services.AddSingleton<IConsulClient, ConsulClient>(_ =>
+            new ConsulClient(c => c.Address = new Uri("http://localhost:8500")))
+            .AddSingleton<ConsulRegistryService>();
+
         services.AddRefitClient<IPasswordManagerApi>()
-            .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7001"))
+            .ConfigureHttpClient((serviceProvider, client) =>
+            {
+                var consulService = serviceProvider.GetRequiredService<ConsulRegistryService>();
+                client.BaseAddress = consulService.GetServiceUri();
+            })
             // Can be used instead of AuthenticationDelegatingHandler
             //.AddUserAccessTokenHandler()
             .AddHttpMessageHandler<AuthenticationDelegatingHandler>()
