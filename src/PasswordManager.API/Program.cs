@@ -1,3 +1,4 @@
+using Consul;
 using Elastic.Apm.NetCoreAll;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,6 +76,10 @@ builder.Services.AddControllers(options =>
     config.DisableDataAnnotationsValidation = true;
     config.RegisterValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
 });
+
+builder.Services.AddSingleton<IConsulClient, ConsulClient>(_ => 
+    new ConsulClient(c => c.Address = new Uri("http://localhost:8500")));
+builder.Services.AddHostedService<ConsulDiscoveryService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

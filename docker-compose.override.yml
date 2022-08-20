@@ -89,3 +89,12 @@ services:
       - 14268:14268
       - 14269:14269
       - 9411:9411
+
+  consul:
+    container_name: Consul
+    ports:
+      - 8500:8500
+      - 8600:8600/udp
+    command: > # "agent -dev -server -ui -node=server-1 -bootstrap-expect=1 -client="0.0.0.0""
+      agent -dev -server -ui -node=server-1 -bootstrap-expect=1
+        -client="0.0.0.0"
