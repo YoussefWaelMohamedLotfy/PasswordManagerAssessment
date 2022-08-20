@@ -8,7 +8,7 @@ public class ConsulDiscoveryService : IHostedService
     private readonly IConsulClient _consulClient;
     private readonly ILogger<ConsulDiscoveryService> _logger;
 
-    string serviceName = Assembly.GetCallingAssembly().GetName().Name!;
+    string serviceName = Assembly.GetExecutingAssembly().GetName().Name!;
 
     public ConsulDiscoveryService(IConsulClient consulClient, ILogger<ConsulDiscoveryService> logger)
     {
