@@ -35,9 +35,8 @@ services:
   #    - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
   elasticsearch:
-    container_name: ElasticSearch-v7
+    container_name: ElasticSearch-v8
     environment:
-      - xpack.monitoring.enabled=true
       - xpack.watcher.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
@@ -47,7 +46,7 @@ services:
       - elasticsearch-data:/usr/share/elasticsearch/data
 
   kibana:
-    container_name: Kibana-v7
+    container_name: Kibana-v8
     environment:        
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - ENTERPRISESEARCH_HOST=http://elastic-enterprise-search:3002
@@ -57,7 +56,7 @@ services:
       - 5601:5601
 
   apmserver:
-    container_name: APM-Server-v7
+    container_name: APM-Server-v8
     cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
     cap_drop: ["ALL"]
     ports:
@@ -74,7 +73,7 @@ services:
         -E output.elasticsearch.hosts=["elasticsearch:9200"]
 
   elastic-enterprise-search:
-    container_name: Elasticsearch-Enterprise-Search
+    container_name: Elasticsearch-Enterprise-Search-v8
     depends_on:
       - elasticsearch
       - kibana
