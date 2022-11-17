@@ -2,6 +2,7 @@ using Consul;
 using Elastic.Apm.NetCoreAll;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Resources;
@@ -16,6 +17,12 @@ using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ConfigureEndpointDefaults(o => o.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
+    options.ConfigureHttpsDefaults(o => o.AllowAnyClientCertificate());
+});
 
 builder.Host.UseSerilog(Serilogger.Configure);
 
@@ -78,7 +85,7 @@ builder.Services.AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblyContaining<IAssemblyScanPoint>();
 
 builder.Services.AddSingleton<IConsulClient, ConsulClient>(_ => 
-    new ConsulClient(c => c.Address = new Uri("http://localhost:8500")));
+    new ConsulClient(c => c.Address = new Uri("http://raspberrypi:8500")));
 builder.Services.AddHostedService<ConsulDiscoveryService>();
 
 builder.Services.AddEndpointsApiExplorer();

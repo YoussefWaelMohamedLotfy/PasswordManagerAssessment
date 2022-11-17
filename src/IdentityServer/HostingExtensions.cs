@@ -66,7 +66,7 @@ internal static class HostingExtensions
 
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
-        app.UseAllElasticApm(app.Configuration);
+        //app.UseAllElasticApm(app.Configuration);
 
         app.UseSerilogRequestLogging();
 

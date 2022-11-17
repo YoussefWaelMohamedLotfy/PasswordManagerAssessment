@@ -1,6 +1,7 @@
 using Elastic.Apm.NetCoreAll;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Resources;
@@ -12,6 +13,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ConfigureEndpointDefaults(o => o.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
+    options.ConfigureHttpsDefaults(o => o.AllowAnyClientCertificate());
+});
 
 builder.Host.UseSerilog(Serilogger.Configure);
 

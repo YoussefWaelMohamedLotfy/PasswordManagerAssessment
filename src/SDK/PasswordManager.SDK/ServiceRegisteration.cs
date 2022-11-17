@@ -21,7 +21,7 @@ public static class ServiceRegisteration
         services.AddTransient<LoggingDelegatingHandler>();
 
         services.AddSingleton<IConsulClient, ConsulClient>(_ =>
-            new ConsulClient(c => c.Address = new Uri("http://localhost:8500")))
+            new ConsulClient(c => c.Address = new Uri("http://raspberrypi:8500")))
             .AddSingleton<ConsulRegistryService>();
 
         services.AddRefitClient<IPasswordManagerApi>()
