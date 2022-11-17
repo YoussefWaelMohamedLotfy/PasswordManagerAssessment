@@ -2,6 +2,7 @@
 using Duende.IdentityServer.EntityFramework.Mappers;
 using Duende.IdentityServer.Models;
 using IdentityModel;
+using IdentityServer.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -18,6 +19,9 @@ public class SeedData
 
         var context = scope.ServiceProvider.GetService<ConfigurationDbContext>();
         context.Database.Migrate();
+
+        scope.ServiceProvider.GetService<AppDbContext>().Database.Migrate();
+
         EnsureSeedData(context);
         EnsureUsers(scope);
     }

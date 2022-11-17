@@ -5,7 +5,7 @@ UI Design uses [Bootstrap 5.2.0](https://getbootstrap.com/)
 
 ## Project Requirements
 
-In order to run the project, .NET 6.0.8 [(SDK 6.0.400)](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) is required to be installed on your machine in order to run the project.
+In order to run the project, .NET 7 [(SDK 7.0.100)](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is required to be installed on your machine in order to run the project.
 
 ## Project Architecture
 
