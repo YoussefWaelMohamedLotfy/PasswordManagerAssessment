@@ -17,6 +17,11 @@ public class AuthenticationDelegatingHandler : DelegatingHandler
     {
         //var accessToken = await _httpContextAccessor.HttpContext!.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
         //var refreshToken = await _httpContextAccessor.HttpContext!.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+
+        // Set HTTP Version to 3 and request lower if not possible
+        request.Version = new(3, 0);
+        request.VersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+
         var accessToken = await _httpContextAccessor.HttpContext!.GetUserAccessTokenAsync(cancellationToken: cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(accessToken))
