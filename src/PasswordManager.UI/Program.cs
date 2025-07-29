@@ -65,7 +65,8 @@ builder.Services.AddAuthentication(options =>
 
 var serviceName = Assembly.GetCallingAssembly().GetName().Name;
 
-builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracerProviderBuilder =>
 {
     tracerProviderBuilder
         .AddJaegerExporter(o =>

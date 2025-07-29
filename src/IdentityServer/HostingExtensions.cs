@@ -46,7 +46,8 @@ internal static class HostingExtensions
         .AddDeveloperSigningCredential();
 
 
-        builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tracerProviderBuilder =>
         {
             tracerProviderBuilder
                 .AddJaegerExporter(o =>
